@@ -1,14 +1,14 @@
 package action;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 
 import dao.CustomerSearchDBAccess;
 import model.Customer;
+import model.OrderControlUtility;
 
 public class CustomerSearchAction {
-	
-	/**
+    
+    /**
      * 顧客検索処理を実行
      *
      * @param data 入力情報配列 (data[0]:電話番号, data[1]:カナ)
@@ -37,72 +37,31 @@ public class CustomerSearchAction {
             kana = "";
         }
 
-        // データベース接続の確立（OrderControlUtilityや共通処理を利用することを想定）
-        // ※ 実際の環境に合わせて Connection の取得ロジックを調整してください。
-        Connection connection = null; 
-        
-        CustomerSearchDBAccess dbAccess = new CustomerSearchDBAccess(connection);
+        // 【修正点①】引数なしでDAOを生成（DB接続はDAOが行うため）
+        CustomerSearchDBAccess dbAccess = new CustomerSearchDBAccess();
         ArrayList<Customer> customerList = new ArrayList<>();
 
         // 2. ①、②、③の順に条件分岐を行う
         if (!tel.equals("") && kana.equals("")) {
-            // ① data[0]の値が「""」と等しくなく かつ data[1]の値が「""」と等しい場合
-            // ⇒ data[0]に一致する顧客情報リストを顧客情報検索DAOに問い合わせる
+            // ① 電話番号のみ入力されている場合
             customerList = dbAccess.searchCustomerByTel(tel);
 
         } else if (tel.equals("") && !kana.equals("")) {
-            // ② data[0]の値が「""」と等しく かつ data[1]の値が「""」と等しくない場合
-            // ⇒ data[1]を含む顧客情報リストを顧客情報検索DAOに問い合わせる
+            // ② カナのみ入力されている場合
             customerList = dbAccess.searchCustomerByKana(kana);
 
         } else if (!tel.equals("") && !kana.equals("")) {
-            // ③ data[0]の値が「""」と等しくなく かつ data[1]の値が「""」と等しくない場合
-            // ⇒ data[0]に一致し かつ data[1]を含む顧客情報リストを顧客情報検索DAOに問い合わせる
-            customerList = dbAccess.searchCustomer(); 
+            // ③ 【修正点③】両方入力されている場合
+            // 引数に「tel」と「kana」を渡して絞り込むメソッドを呼び出す
+            customerList = dbAccess.searchCustomer(tel, kana); 
         }
 
-        // 3. 顧客情報リストが取得できた場合は、顧客情報リストを検索結果表示用データに変換
-        return convertToTableData(customerList);
+        // 【修正点②】データ変換用のUtilityを呼び出す
+        OrderControlUtility utility = new OrderControlUtility();
+        
+        // utilityのcustomerToArrayメソッドにリストを渡して、2次元配列（String[][]）に変換して画面に返す
+        // ※データが0件のときは、utility側で自動的に null が返る仕様
+        return utility.customerToArray(customerList);
     }
-
-    /**
-     * 💡 戻り値の変換ロジック
-     * ArrayList<Customer> を 検索結果表示用データ（String[][]）に変換します。
-     *
-     * @param list 顧客情報のリスト
-     * @return 2次元配列の表示データ
-     */
-    private String[][] convertToTableData(ArrayList<Customer> list) {
-        if (list == null || list.isEmpty()) {
-            return new String[0][0];
-        }
-
-        // リストの件数分の行数、5つの属性（ID, 名前, カナ, 電話, 住所）の列数で配列を初期化
-        String[][] tableData = new String[list.size()][5];
-
-        for (int i = 0; i < list.size(); i++) {
-            Customer c = list.get(i);
-            tableData[i][0] = String.valueOf(c.getCustId()); // 顧客ID
-            tableData[i][1] = c.getCustName();              // 顧客名
-            tableData[i][2] = c.getKana();                  // 顧客カナ
-            tableData[i][3] = c.getTel();                   // 顧客電話番号
-            tableData[i][4] = c.getAddress();               // 顧客住所
-        }
-
-        return tableData;
-    }
-
-
-    /**
-     * customerToArray()
-     * 戻り値を Customer[] 配列の形式で要求されるパターン対応
-     */
-    private Customer[] customerToArray(ArrayList<Customer> list) {
-        if (list == null) {
-            return new Customer[0];
-        }
-        return list.toArray(new Customer[0]);
-    }
+    
 }
-
-
