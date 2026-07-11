@@ -19,10 +19,10 @@ public class CustomerSearchAction {
         // 1. data[0]の値とdata[1]の値の半角スペースと全角スペースを取り除く
         if (data != null) {
             if (data.length > 0 && data[0] != null) {
-                data[0] = data[0].replace(" ", "").replace(" ", "");
+                data[0] = data[0].replace(" ", "").replace("　", "");
             }
             if (data.length > 1 && data[1] != null) {
-                data[1] = data[1].replace(" ", "").replace(" ", "");
+                data[1] = data[1].replace(" ", "").replace("　", "");
             }
         }
 
