@@ -1,6 +1,7 @@
 package control;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -57,23 +58,41 @@ public class KiddaLaController extends HttpServlet {
                 
                 // Action（司令塔）に渡すために配列の形にまとめる
                 String[] searchData = { tel, kana };
-                
+
+                // 検索が終わったら、また検索画面（結果付き）に戻る
+                // ※検索中にエラーが起きた場合もエラーメッセージを表示するため、先に設定しておく
+                forwardPage = "customerSearch.jsp";
+
                 // 顧客検索の司令塔（Action）を呼び出す
                 CustomerSearchAction action = new CustomerSearchAction();
                 String[][] resultTable = action.execute(searchData);
-                
+
                 // 実行して戻ってきた検索結果（2次元配列）をセッション（荷物置き場）に保存する
                 // これにより、次に開くJSP画面でこの結果を取り出して表にできます
                 session.setAttribute("customerData", resultTable);
-                
-                // 検索が終わったら、また検索画面（結果付き）に戻る
-                forwardPage = "customerSearch.jsp";
+
+            } else if (command.equals("OrderControlDisplay")) {
+                // 「検索結果の顧客を選択した」という指示の場合
+                // 「注文／配達確認／顧客情報変更」画面へ（選択した顧客IDはパラメータcustIdで渡る）
+                forwardPage = "orderControl.jsp";
             }
-            
+
         } catch (Exception e) {
             // 万が一エラーが起きた場合はスタックトレースをログに出力
             e.printStackTrace();
-            // 今回は割愛しますが、実務ではエラー画面等へ案内します
+
+            // エラーメッセージ表に従い、画面に表示するエラーコードを決める
+            // DBへ接続できない（ドライバなし・接続失敗・認証失敗）場合は010、それ以外（SQL文が実行できない）は013
+            String errorCode = "013";
+            if (e instanceof ClassNotFoundException) {
+                errorCode = "010";
+            } else if (e instanceof SQLException) {
+                String sqlState = ((SQLException) e).getSQLState();
+                if (sqlState != null && (sqlState.startsWith("08") || sqlState.equals("28000"))) {
+                    errorCode = "010";
+                }
+            }
+            request.setAttribute("errorCode", errorCode);
         }
 
         // 4. 指定された次のJSP画面へ、ユーザーを「案内（フォワード）」する

@@ -1,0 +1,219 @@
+@charset "UTF-8";
+
+/*
+ * KIDDA-LA業務システム 共通スタイルシート
+ * 画面レイアウト図（KO-01-1，KO-02-1）の配置・配色に合わせる。
+ */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f1efec;
+    color: #333333;
+    font-family: "Meiryo", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 14px;
+}
+
+/* 画面全体の枠 */
+.screen {
+    position: relative;
+    max-width: 960px;
+    min-height: 480px;
+    margin: 0 auto;
+    padding-bottom: 48px;
+    background: #ffffff;
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+}
+
+/* ヘッダ（システム名と画面名） */
+.header {
+    padding: 16px 0 12px;
+    background: #e6e3df;
+    text-align: center;
+}
+
+.header .system-name {
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.header .screen-name {
+    margin: 6px 0 0;
+    font-size: 14px;
+}
+
+.content {
+    padding: 24px 40px;
+}
+
+/* フッタ */
+.footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 0;
+    background: #e6e3df;
+    font-size: 11px;
+    text-align: center;
+}
+
+/* ボタン */
+.btn {
+    display: inline-block;
+    border: none;
+    border-radius: 14px;
+    padding: 6px 0;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+}
+
+.btn-menu {
+    width: 280px;
+    padding: 10px 0;
+    background: #1e8a50;
+    font-size: 15px;
+}
+
+.btn-search {
+    width: 100%;
+    background: #12c4e6;
+}
+
+.btn-sub {
+    width: 48%;
+    background: #6c757d;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+/* メインメニュー */
+.menu {
+    padding-top: 120px;
+    text-align: center;
+}
+
+/* 顧客情報検索：左側のフォームと右側の検索結果を横並びにする */
+.search-area {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.search-form {
+    flex: 0 0 280px;
+}
+
+.field {
+    margin-bottom: 12px;
+    background: #d9f6fc;
+}
+
+.field label {
+    display: block;
+    padding: 6px;
+    background: #12c4e6;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.field input {
+    display: block;
+    width: calc(100% - 16px);
+    margin: 8px;
+    padding: 5px 6px;
+    border: 1px solid #cccccc;
+    font-size: 13px;
+}
+
+.sub-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+
+/* 検索結果 */
+.result {
+    flex: 1;
+    background: #fff4d6;
+}
+
+.result .result-title {
+    padding: 6px;
+    background: #ffc31a;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.result table {
+    width: calc(100% - 16px);
+    margin: 8px;
+    border-collapse: collapse;
+    background: #ffffff;
+    font-size: 12px;
+}
+
+.result th,
+.result td {
+    border-bottom: 1px solid #f0e2bd;
+    text-align: left;
+}
+
+.result th {
+    padding: 4px 8px;
+    background: #fff8e6;
+    text-align: center;
+}
+
+.result td.id {
+    text-align: right;
+}
+
+.result tbody tr:hover {
+    background: #e8f6ff;
+}
+
+/* セル全体をクリックできるようにする */
+.result a {
+    display: block;
+    padding: 4px 8px;
+    color: #1a5fd0;
+    text-decoration: none;
+}
+
+/* 顧客情報表示（注文／配達確認／顧客情報変更画面スタブ） */
+.customer-info {
+    border-collapse: collapse;
+    margin-bottom: 16px;
+}
+
+.customer-info th,
+.customer-info td {
+    padding: 6px 12px;
+    border: 1px solid #dddddd;
+    text-align: left;
+}
+
+.customer-info th {
+    background: #d9f6fc;
+}
+
+.note {
+    color: #888888;
+    font-size: 12px;
+}
