@@ -67,12 +67,13 @@ public class CustomerSearchActionTest {
     @DisplayName("入力値補正：半角スペース・全角スペースが混在していても正常に除去されて検索できること")
     public void testExecute_WithSpaces() throws Exception {
         // DBに存在する実データ（伊藤華英さん: TEL="09087654321", KANA="イトウハナエ"）の条件にスペースを混ぜる
-        String[] input = { " 090 8765 4321 ", " イトウ " };
+        String[] input = { "090　8765 4321 ", " イトウ　" };
 
         String[][] result = action.execute(input);
 
         assertNotNull(result, "スペース除去後に正常に検索結果が返ること");
         assertTrue(result.length > 0, "1件以上の結果が取得できること");
+        assertEquals("09087654321", result[0][3], "スペースが正しく除去されて正しく該当データが検索できること"); // アサーション追加
     }
 
     // -------------------------------------------------------------------------

@@ -69,20 +69,20 @@ public class CustomerSearchDBAccessTest {
     @DisplayName("カナ検索：該当データあり（条件: True）")
     public void testSearchCustomerByKana_Hit() throws Exception {
         // DBに存在するフリガナの一部（LIKE検索）を指定
-        String kana = "ヤマダ"; 
+        String kana = "イトウ"; 
         ArrayList<Customer> list = dbAccess.searchCustomerByKana(kana);
 
-        assertNotNull(list);
-        if (!list.isEmpty()) {
-            assertTrue(list.get(0).getKana().contains(kana));
-        }
+        assertNotNull(list, "検索結果リストがnullでないこと");
+        assertFalse(list.isEmpty(), "該当データが1件以上取得できること"); // if文を削除、0件でないことを確認
+        assertTrue(list.get(0).getKana().contains(kana), "検索キーのカナが含まれていること");
+
     }
 
     @Test
     @DisplayName("カナ検索：該当データなし（条件: False）")
     public void testSearchCustomerByKana_NoHit() throws Exception {
         // DBに存在しないフリガナを指定
-        String kana = "ンンンンン"; 
+        String kana = "ヤマダ"; 
         ArrayList list = dbAccess.searchCustomerByKana(kana);
 
         assertNotNull(list);
@@ -96,11 +96,12 @@ public class CustomerSearchDBAccessTest {
     @DisplayName("複合検索 [True, True]：tel一致 ＆ kana一致（両方ヒット）")
     public void testSearchCustomer_BothHit() throws Exception {
         String tel = "09011112222";
-        String kana = "ヤマダ";
+        String kana = "イトウ";
         ArrayList<Customer>  list = dbAccess.searchCustomer(tel, kana);
 
-        assertNotNull(list);
-        // 両方の条件を満たすデータのみが取得できているか確認
+        assertNotNull(list, "検索結果リストがnullでないこと");
+        assertFalse(list.isEmpty(), "該当データが取得できていること（0件スルー防止）"); // for文の前に追加
+
         for (Customer c : list) {
             assertEquals(tel, c.getTel());
             assertTrue(c.getKana().contains(kana));
@@ -111,7 +112,7 @@ public class CustomerSearchDBAccessTest {
     @DisplayName("複合検索 [True, False]：tel一致 ＆ kana不一致（ヒットなし）")
     public void testSearchCustomer_TelHit_KanaNoHit() throws Exception {
         String tel = "09011112222";
-        String kana = "存在しないカナ";
+        String kana = "ヤマダ";
         ArrayList list = dbAccess.searchCustomer(tel, kana);
 
         assertNotNull(list);
@@ -122,7 +123,7 @@ public class CustomerSearchDBAccessTest {
     @DisplayName("複合検索 [False, True]：tel不一致 ＆ kana一致（ヒットなし）")
     public void testSearchCustomer_TelNoHit_KanaHit() throws Exception {
         String tel = "00000000000";
-        String kana = "ヤマダ";
+        String kana = "イトウ";
         ArrayList list = dbAccess.searchCustomer(tel, kana);
 
         assertNotNull(list);
@@ -133,7 +134,7 @@ public class CustomerSearchDBAccessTest {
     @DisplayName("複合検索 [False, False]：tel不一致 ＆ kana不一致（ヒットなし）")
     public void testSearchCustomer_BothNoHit() throws Exception {
         String tel = "00000000000";
-        String kana = "存在しないカナ";
+        String kana = "ヤマダ";
         ArrayList list = dbAccess.searchCustomer(tel, kana);
 
         assertNotNull(list);
