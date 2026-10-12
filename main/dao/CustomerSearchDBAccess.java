@@ -11,7 +11,7 @@ import model.Customer;
 public class CustomerSearchDBAccess {
 
     // 【修正点①】DB接続情報をクラスの「定数」として1箇所にまとめる（レビュー指摘：DRY違反の解消）
-    private static final String URL = "jdbc:mysql://localhost:3306/KIDDA_LA"; // ポートを仕様通りの65543→65534に修正
+    private static final String URL = "jdbc:mysql://localhost:65534/KIDDA_LA"; // ポートを仕様通りの65543→65534に修正
     private static final String USER = "root";
     private static final String PASSWORD = "mysql818";
 
